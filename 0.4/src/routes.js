@@ -15,6 +15,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { getConfig, updateConfig, deepMerge as deepMergeConfig, DATA_DIR } from './config.js';
 import { customSearch } from './web-search.js';
+import { SEARCH_API_PROVIDERS } from './search-providers/index.js';
 import { listModels, chatCompletion, resolveApiKey, estimateCost, cacheHitRate } from './llm.js';
 import { resolveOfficialPrice, listOfficialPrices } from './model-prices.js';
 import { refreshPriceFeed, priceFeedStatus, initPriceFeed } from './price-feed.js';
@@ -313,7 +314,7 @@ export function createRoutes(deps) {
       handler: async ({ req, res, json, url }) => {
         if (!keyEndpointAllowed(req)) return json(res, 403, { error: '请求来源不被信任，已拒绝读取明文密钥。' });
         const field = String(url.searchParams.get('field') || '');
-        const allowed = ['deepseek', 'zhipu', 'bocha', 'baidu', 'metaso'];
+        const allowed = ['deepseek', 'zhipu', 'bocha', 'baidu', 'metaso', ...Object.keys(SEARCH_API_PROVIDERS)];
         // 各家对应的环境变量名：Key 没存进配置但环境里有时，也算"有 Key"
         //（web-search.js 的取值优先级就是 cfg.apiKey > env），UI 的掩码/显示
         // 口径必须与之一致，否则会出现"明明能搜，Key 框却显示空"的错觉。
@@ -322,7 +323,8 @@ export function createRoutes(deps) {
           zhipu: 'ZHIPU_API_KEY',
           bocha: 'BOCHA_API_KEY',
           baidu: 'BAIDU_SEARCH_API_KEY',
-          metaso: 'METASO_API_KEY'
+          metaso: 'METASO_API_KEY',
+          ...Object.fromEntries(Object.entries(SEARCH_API_PROVIDERS).map(([id, provider]) => [id, provider.envKey]))
         };
         if (allowed.includes(field)) {
           const fromCfg = String(getConfig().webSearch?.[field]?.apiKey || '');

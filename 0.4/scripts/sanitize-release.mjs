@@ -128,7 +128,13 @@ function resetConfig() {
 
   // ── 搜索服务 Key（含自定义的多个）──
   if (cfg.webSearch) {
-    for (const k of ['deepseek', 'zhipu', 'bocha', 'baidu', 'metaso', 'custom']) {
+    // API 型搜索服务（Tavily / Brave / Exa / Firecrawl / Perplexity / Parallel / Keenable）
+    // 也带 apiKey。这里刻意不 import src/search-providers：本脚本会被单独复制到
+    // 隔离沙箱里跑（test/external-onebot-boundary-test.mjs），跨目录 import 会失败。
+    for (const k of [
+      'deepseek', 'zhipu', 'bocha', 'baidu', 'metaso', 'custom',
+      'tavily', 'brave', 'exa', 'firecrawl', 'perplexity', 'parallel', 'keenable'
+    ]) {
       if (cfg.webSearch[k] && 'apiKey' in cfg.webSearch[k]) {
         cfg.webSearch[k].apiKey = '';
         cleared.push(`webSearch.${k}.apiKey`);

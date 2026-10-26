@@ -7,6 +7,7 @@
 //    合法配置。真正的远程输入（模型传进来的 query）已由 sanitizeQuery 清洗。
 import { getConfig } from './config.js';
 import { safeFetch } from './safe-fetch.js';
+import { isApiProvider, searchApiProvider } from './search-providers/index.js';
 
 /** 查询词清洗：去 CQ 码、控制字符、超长截断。 */
 export function sanitizeQuery(query) {
@@ -120,6 +121,8 @@ export async function webSearch(query) {
   if (provider === 'custom' || provider.startsWith('custom:')) {
     return customSearch(clean, provider);
   }
+  // 其余内置 API 型提供方（Tavily / Brave / Exa / Firecrawl / Perplexity / Parallel / Keenable）
+  if (isApiProvider(provider)) return searchApiProvider(provider, clean, { webSearch: cfg });
   return bingSearch(clean);
 }
 

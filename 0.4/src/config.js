@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PERSONAS } from './personas.js';
+import { apiProviderConfigDefaults } from './search-providers/index.js';
 import { sliderToTier } from './tier-slider.js';   // 零依赖模块，避免循环依赖
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -100,6 +101,7 @@ export const DEFAULT_CONFIG = {
     searchUrl: 'https://cn.bing.com/search',
     maxResults: 6,
     // 可选：'bing' | 'deepseek' | 'zhipu' | 'bocha' | 'baidu' | 'metaso'
+    //      | 'tavily' | 'brave' | 'exa' | 'firecrawl' | 'perplexity' | 'parallel' | 'keenable'
     provider: 'bing',
     deepseek: {
       apiKey: '',                     // 留空时回退环境变量 DEEPSEEK_API_KEY
@@ -132,6 +134,10 @@ export const DEFAULT_CONFIG = {
       count: 6,
       timeoutMs: 20000
     },
+    // API 型搜索服务（Tavily / Brave / Exa / Firecrawl / Perplexity / Parallel / Keenable）：
+    // 默认地址、条数与超时由 src/search-providers/<id>.js 提供，这里只展开，
+    // 避免地址在两个文件各写一份而漂移。每家都可用环境变量回退 Key（见各家 envKey）。
+    ...apiProviderConfigDefaults(),
     // 自定义搜索提供商列表（设置页可像添加模型提供商一样自行添加，可多个）。
     // 每项：{ id, name, type, baseUrl, apiKey, model, count, timeoutMs }
     // type: 'openai' = POST JSON 搜索接口；'bing' = GET 页面并按 b_algo 解析
