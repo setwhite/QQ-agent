@@ -1,14 +1,14 @@
 # QQ Agent（桌面端）
 ![平台](https://img.shields.io/badge/platform-Windows%20%7C%20Electron-lightgrey)
 ![技术栈](https://img.shields.io/badge/stack-Node.js%20%7C%20原生前端-orange)
-![测试](https://img.shields.io/badge/tests-24%20suites%20%E2%80%89620%2B%20assertions-brightgreen)
+![测试](https://img.shields.io/badge/tests-25%20suites%20%E2%80%89620%2B%20assertions-brightgreen)
 一个跑在你自己电脑上的 QQ 群聊机器人：连接自行准备的 OneBot v11 协议端后，在图形控制台配置模型和聊天行为。
 事件驱动 + 无状态会话架构，每次处理的 token 成本恒定可控；机器人配置在图形控制台中完成；协议端的安装和登录由用户按其自身说明操作。
 从 [Derpyu520/qq-bridge](https://github.com/Derpyu520/qq-bridge) 彻底改造而来的独立 QQ agent 应用。
 ## 能实现什么
 - **像真人一样混群**：被 @ 或被叫到时回话，平时看心情插嘴；会发文字、表情包、戳一戳，会引用、会 @ 人，知道什么时候该闭嘴
 - **记住每个群友**：双向长期记忆——它记得谁是什么风格、爱什么梗、雷点是什么，下次聊天自然带上；记忆页随时可查看、手动编辑
-- **看得懂图、上得了网**：视觉模型直接看消息里的图片；内置 6 家搜索服务（含免 Key 的 Bing 网页解析），还能自己加任意兼容搜索服务
+- **看得懂图、上得了网**：视觉模型直接看消息里的图片；内置 13 家搜索服务（含免 Key 的 Bing 网页解析），还能自己加任意兼容搜索服务
 - **花多少看多少**：每次调用的 token 和成本精确记录，按天 / 按会话 / 按模型三个维度统计，缓存命中率、峰谷分时计价、图片计费口径全标清楚
 - **零编程门槛**：所有配置都在控制台点选——白名单从 QQ 里直接勾选群，模型从模型目录里点选切换，不用查群号、不用写配置
 ## 技术架构
@@ -38,7 +38,8 @@
 **记忆**
 - 自动记录对群友的长期印象；可手动触发整理（合并重复、删过时），或对单个群友「更新记忆」
 **搜索服务**
-- 6 家内置（Bing 免 Key / DeepSeek / 智谱 / 博查 / 百度千帆 / 秘塔）+ 自定义添加任意兼容服务，可加多个
+- 13 家内置（Bing 免 Key / DeepSeek / 智谱 / 博查 / 百度千帆 / 秘塔 / Tavily / Brave / Exa / Firecrawl / Perplexity / Parallel / Keenable）+ 自定义添加任意兼容服务，可加多个
+- 后 7 家（Tavily / Brave / Exa / Firecrawl / Perplexity / Parallel / Keenable）还没有设置页下拉项：在 config.json 的 `webSearch.provider` 填其 id，Key 填同节 `apiKey`，或设环境变量 `TAVILY_API_KEY` / `BRAVE_SEARCH_API_KEY` / `EXA_API_KEY` / `FIRECRAWL_API_KEY` / `PERPLEXITY_API_KEY` / `PARALLEL_API_KEY` / `KEENABLE_API_KEY`
 **白名单**
 - 从 QQ 账号拉群列表/好友列表直接勾选；机器人只对名单内的会话工作
 **桌面端**
